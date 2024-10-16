@@ -15,6 +15,8 @@ import lombok.Setter;
 @Setter
 public class PostDTO {
 	
+	private Integer postId;
+	
 	@NotBlank
 	@Size(min=4, message="Min size of post title is 4")
 	private String title;
