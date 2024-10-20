@@ -29,8 +29,8 @@ import com.vaibhavvasurkar.blog.payloads.PostResponse;
 import com.vaibhavvasurkar.blog.services.FileService;
 import com.vaibhavvasurkar.blog.services.PostService;
 
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/")

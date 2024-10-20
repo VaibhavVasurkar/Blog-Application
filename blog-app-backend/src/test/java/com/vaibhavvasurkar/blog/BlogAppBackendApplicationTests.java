@@ -4,13 +4,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.vaibhavvasurkar.blog.repositories.UserRepo;
+import com.vaibhavvasurkar.blog.repositories.UserEntityRepository;
 
 @SpringBootTest
 class BlogAppBackendApplicationTests {
 	
 	@Autowired
-	private UserRepo userRepo;
+	private UserEntityRepository userRepo;
 
 	@Test
 	void contextLoads() {

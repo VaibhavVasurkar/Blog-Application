@@ -10,11 +10,11 @@ import org.springframework.data.repository.query.Param;
 
 import com.vaibhavvasurkar.blog.entities.Category;
 import com.vaibhavvasurkar.blog.entities.Post;
-import com.vaibhavvasurkar.blog.entities.User;
+import com.vaibhavvasurkar.blog.entities.UserEntity;
 
 public interface PostRepo extends JpaRepository<Post, Integer>{
 	
-	Page<Post> findByUser(User user, Pageable pageable);
+	Page<Post> findByUser(UserEntity user, Pageable pageable);
     Page<Post> findByCategory(Category category, Pageable pageable);
     
     //List<Post> findByTitleContaining(String title);

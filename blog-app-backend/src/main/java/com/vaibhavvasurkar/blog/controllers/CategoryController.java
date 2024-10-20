@@ -18,7 +18,7 @@ import com.vaibhavvasurkar.blog.payloads.ApiResponse;
 import com.vaibhavvasurkar.blog.payloads.CategoryDTO;
 import com.vaibhavvasurkar.blog.services.CategoryService;
 
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/categories")

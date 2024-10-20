@@ -14,13 +14,13 @@ import org.springframework.stereotype.Service;
 
 import com.vaibhavvasurkar.blog.entities.Category;
 import com.vaibhavvasurkar.blog.entities.Post;
-import com.vaibhavvasurkar.blog.entities.User;
+import com.vaibhavvasurkar.blog.entities.UserEntity;
 import com.vaibhavvasurkar.blog.exceptions.ResourceNotFoundException;
 import com.vaibhavvasurkar.blog.payloads.PostDTO;
 import com.vaibhavvasurkar.blog.payloads.PostResponse;
 import com.vaibhavvasurkar.blog.repositories.CategoryRepo;
 import com.vaibhavvasurkar.blog.repositories.PostRepo;
-import com.vaibhavvasurkar.blog.repositories.UserRepo;
+import com.vaibhavvasurkar.blog.repositories.UserEntityRepository;
 import com.vaibhavvasurkar.blog.services.PostService;
 
 @Service
@@ -33,7 +33,7 @@ public class PostServiceImpl implements PostService {
 	private ModelMapper modelMapper;
 
 	@Autowired
-	private UserRepo userRepo;
+	private UserEntityRepository userRepo;
 
 	@Autowired
 	private CategoryRepo categoryRepo;
@@ -41,7 +41,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public PostDTO createPost(PostDTO postDTO, Integer userId, Integer categoryId) {
 
-		User user = userRepo.findById(userId)
+		UserEntity user = userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("User", "User id", userId));
 
 		Category category = categoryRepo.findById(categoryId)
@@ -141,7 +141,7 @@ public class PostServiceImpl implements PostService {
 		
 		Pageable p = PageRequest.of(pageNumber, pageSize);
 
-		User user = userRepo.findById(userId)
+		UserEntity user = userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
 		
 		Page<Post> pagePost = postRepo.findByUser(user,p);
