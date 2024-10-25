@@ -2,6 +2,7 @@ package com.vaibhavvasurkar.blog.controllers;
 
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,15 +11,19 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vaibhavvasurkar.blog.entities.UserEntity;
 import com.vaibhavvasurkar.blog.exceptions.ApiException;
 import com.vaibhavvasurkar.blog.payloads.SigninRequest;
 import com.vaibhavvasurkar.blog.payloads.SigninResponse;
 import com.vaibhavvasurkar.blog.payloads.UserDTO;
+import com.vaibhavvasurkar.blog.security.CustomUserDetails;
+import com.vaibhavvasurkar.blog.security.CustomUserDetailsService;
 import com.vaibhavvasurkar.blog.security.JwtUtils;
 import com.vaibhavvasurkar.blog.services.*;
 
@@ -34,6 +39,12 @@ public class UserSignInSignupController {
 	
 	@Autowired
 	private AuthenticationManager authMgr;
+	
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	@Autowired
+	private CustomUserDetailsService  customUserDetailsService;
 
 	/*
 	 * URL - http://host:port/users/signin Method - POST request payload : Auth req
@@ -55,13 +66,14 @@ public class UserSignInSignupController {
 			
 			Authentication verifiedToken = authMgr.authenticate(token);
 			
+			UserEntity user = customUserDetailsService.getUserbyEmail(request.getEmail());
 			
 			//=> authentication n authorization  successful !
 			System.out.println(verifiedToken.getPrincipal().getClass());//custom user details object
 			//create JWT n send it to the clnt in response
 			SigninResponse resp=new SigninResponse
 					(jwtUtils.generateJwtToken(verifiedToken),
-					"Successful Auth!!!!");
+					"Successful Auth!!!!", modelMapper.map(user, UserDTO.class));
 			return ResponseEntity.
 					status(HttpStatus.CREATED).body(resp);
 		} catch( BadCredentialsException e) {			
@@ -70,7 +82,7 @@ public class UserSignInSignupController {
 	}
 	
 	@PostMapping("/signup")
-	public ResponseEntity<UserDTO> registerNewUser(@RequestBody UserDTO userDTO){
+	public ResponseEntity<UserDTO> registerNewUser(@Valid @RequestBody UserDTO userDTO){
 		UserDTO registeredNewUser = userService.registerNewUser(userDTO);
 		return new ResponseEntity<UserDTO>(registeredNewUser, HttpStatus.CREATED);
 	}

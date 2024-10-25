@@ -28,5 +28,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 		 */
 		return new CustomUserDetails(user);
 	}
+	
+	public UserEntity getUserbyEmail(String email) throws  UsernameNotFoundException{
+		UserEntity user = userRepo.findByEmail(email)
+				.orElseThrow(() -> 
+				new UsernameNotFoundException("Email not found !!!!!"));
+		return user;
+	}
 
 }

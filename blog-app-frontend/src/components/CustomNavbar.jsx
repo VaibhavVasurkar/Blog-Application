@@ -53,6 +53,9 @@ const CustomNavbar = () => {
               </DropdownMenu>
             </UncontrolledDropdown>
           </Nav>
+          <Nav>
+            
+          </Nav>
           <NavbarText>YouTube</NavbarText>
         </Collapse>
       </Navbar>

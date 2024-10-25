@@ -5,6 +5,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,10 +24,11 @@ public class UserDTO {
 	private String name;
 	
 	@Email(message = "Email address is not valid !!")
+	@NotEmpty
 	private String email;
 	
 	@NotEmpty
-	@Size(min=3, max=10, message= "Password must be min of 3 chars and max of 10 chars !!")
+	@Size(min=3, max=50, message= "Password must be min of 3 chars and max of 50 chars !!")
 	//@Pattern(regexp="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\\\S+$).{8,20}$")
 	private String password;
 	
@@ -33,6 +37,9 @@ public class UserDTO {
 	
 	private RoleDTO role;
 	
-
+	@JsonIgnore
+	public String getPassword() {
+		return this.password;
+	}
 
 }

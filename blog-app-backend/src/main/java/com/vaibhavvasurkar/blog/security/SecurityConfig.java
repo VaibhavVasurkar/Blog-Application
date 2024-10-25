@@ -1,6 +1,7 @@
 package com.vaibhavvasurkar.blog.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,6 +14,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @EnableWebSecurity//to enable spring sec frmwork support
 @Configuration //to tell SC , this is config class containing @Bean methods
@@ -41,7 +45,7 @@ public class SecurityConfig {
 		.exceptionHandling().authenticationEntryPoint(authEntry).
 		and().
 		authorizeRequests()
-		.antMatchers("/users/signup","/users/signin",
+		.antMatchers("/users/signup","/users/signin","/api/users/**",
 				"/v*/api-doc*/**","/swagger-ui/**").permitAll()
 		// only required for JS clnts (react / angular) : for the pre flight requests
 		.antMatchers(HttpMethod.OPTIONS).permitAll()
@@ -66,4 +70,30 @@ public class SecurityConfig {
 	{
 		return config.getAuthenticationManager();
 	}
+	
+	  @Bean
+	    public FilterRegistrationBean coresFilter() {
+	        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
+	        CorsConfiguration corsConfiguration = new CorsConfiguration();
+	        corsConfiguration.setAllowCredentials(true);
+	        corsConfiguration.addAllowedOriginPattern("*");
+	        corsConfiguration.addAllowedHeader("Authorization");
+	        corsConfiguration.addAllowedHeader("Content-Type");
+	        corsConfiguration.addAllowedHeader("Accept");
+	        corsConfiguration.addAllowedMethod("POST");
+	        corsConfiguration.addAllowedMethod("GET");
+	        corsConfiguration.addAllowedMethod("DELETE");
+	        corsConfiguration.addAllowedMethod("PUT");
+	        corsConfiguration.addAllowedMethod("OPTIONS");
+	        corsConfiguration.setMaxAge(3600L);
+
+	        source.registerCorsConfiguration("/**", corsConfiguration);
+
+	        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+
+	        bean.setOrder(-110);
+
+	        return bean;
+	    }
 }

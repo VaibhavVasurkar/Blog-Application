@@ -12,8 +12,63 @@ import {
   Row,
 } from "reactstrap";
 import Base from "../components/Base";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import { loginUser } from "../services/user-service";
+import { doLogin } from "../auth";
 
 const Login = () => {
+
+   const [loginDetail, setLoginDetail]=useState({
+    email:'',
+    password:''
+  })
+
+  const handleChange=(event, field)=>{
+    let actualValue=event.target.value
+    setLoginDetail({
+      ...loginDetail,
+      [field]:actualValue
+    })
+  }
+
+  const handleReset = () =>{
+    setLoginDetail({
+      email:'',
+      password:''
+    })
+  }
+
+  const handleFormSubmit=(event)=>{
+    event.preventDefault();
+    console.log(loginDetail)
+
+    if(loginDetail.email.trim()=='' || loginDetail.password.trim() =='' ){
+      toast.error("Username or password is required !!")
+      return;
+    }
+
+    //submit the data to server to generate token
+    loginUser(loginDetail).then((data)=>{
+      console.log(data)
+      
+      doLogin(data,()=>{
+        console.log("login detail is saved to localstorage")
+      })
+
+      toast.success("Login Success ")
+
+    }).catch(error=>{
+      console.log(error)
+      if(error.response.status==400 || error.response.status==400){
+        toast.error(error.response.data.message)
+      }else{
+      toast.error("something went wrong on server !!")
+      }
+    })
+
+  }
+
   return (
     <Base>
       <Container>
@@ -25,7 +80,7 @@ const Login = () => {
               </CardHeader>
               <CardBody>
                 {/*  login form */}
-                <Form>
+                <Form onSubmit={handleFormSubmit}>
                   {/* email field */}
                   <FormGroup>
                     <Label for="email">Enter email</Label>
@@ -33,6 +88,8 @@ const Login = () => {
                       type="email"
                       placeholder="Enter email here"
                       id="email"
+                      value={loginDetail.email}
+                      onChange={(e)=>handleChange(e, 'email')}
                     />
                   </FormGroup>
 
@@ -43,11 +100,13 @@ const Login = () => {
                       type="password"
                       placeholder="Enter password here"
                       id="password"
+                      value={loginDetail.password}
+                      onChange={(e)=>handleChange(e,'password')}
                     />
                   </FormGroup>
                   <Container className="text-center">
                     <Button color="success">Login</Button>
-                    <Button color="danger" className="ms-4" type="reset">
+                    <Button color="danger" className="ms-4" type="reset" onClick={handleReset}>
                       Reset
                     </Button>
                   </Container>
